@@ -23,7 +23,7 @@ require Exporter;
 @EXPORT = qw(
 	
 );
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 
 # Preloaded methods go here.
@@ -184,9 +184,24 @@ Lame Ain't Mp3 Encoder and so on).
 ENAML was defined by Robey Pointer for use in Say2, check 
 http://www.lag.net/say2.
 
+=head1 CREDITS
+
+Robey Pointer has an ENAML module, but I couldn't find it in CPAN.
+Differences between the modules (besides the different API) include:
+
+=item 
+
+Data::ENAML will marshall blessed objects.
+
+=item
+
+Data::ENAML does not convert UTF-8, and does not automatically assume 
+Latin-1 charset.
+
 =head1 TODO
 
-Support UTF-8.
+Support UTF-8. Robey's module assumes automatically Latin character set. 
+Nu, Ivrit Kasha Saffa!
 
 =head1 AUTHOR
 

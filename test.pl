@@ -6,11 +6,25 @@
 # Change 1..1 below to 1..last_test_to_print .
 # (It may become useful if the test is moved to ./t subdirectory.)
 
-BEGIN { $| = 1; print "1..1\n"; }
+BEGIN { $| = 1; print "1..2\n"; }
 END {print "not ok 1\n" unless $loaded;}
-use Data::ENAML;
+use Data::ENAML qw(:all);
 $loaded = 1;
 print "ok 1\n";
+
+my $struct = {'module' => {'nick' => 'Schop', 'inspired' => 'by',
+	'Robey' => 'Cute. But why are you reading the test source?'}};
+
+my $text = serialize($struct);
+my $struct2 = deserialize($text);
+my $text2 = serialize($struct2);
+
+if ($text eq $text2) {
+	print "ok 2\n";
+} else {
+	print "not ok 2\n";
+}
+
 
 ######################### End of black magic.
 
