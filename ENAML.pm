@@ -23,7 +23,7 @@ require Exporter;
 @EXPORT = qw(
 	
 );
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 
 # Preloaded methods go here.
@@ -47,7 +47,7 @@ sub serialize {
 	unless ($pair[0] =~ /[a-z_-]{1,32}/i) {
 		croak "$pair[0] is an illegal key name";
 	}
-	"$pair[0]: " . &do_serialize($pair[1], {});
+	"$pair[0]: " . &do_serialize($pair[1], {}) . "\r\n";
 }
 
 sub do_serialize {
@@ -73,6 +73,10 @@ sub do_serialize {
 				croak "$datum is an illegal key name";
 			}
 			$str .= " " if (++$count > 1);
+			if ($val eq "\000" || !defined($val)) {
+				$str .= $key;
+				next;
+			}
 			$str .= "$key: " . &do_serialize($val);
 		}
 		$str .= " }";
@@ -92,6 +96,7 @@ sub do_serialize {
 
 sub deserialize {
 	my $text = shift;
+	$text =~ s/[\r\n]+$//;
 	my ($hash, $rem) = &deserialize_hash("$text }");
 	croak "Ended at $rem" if ($rem);
 	$hash;
@@ -105,10 +110,14 @@ sub deserialize_hash {
 		if (s/^\}//) {
 			return ($struct, $_);
 		}
-		unless (s/^([A-Za-z-_]{1,32}):\s*//) {
+		unless (s/^([A-Za-z-_]{1,32})(:?)\s*//) {
 			croak "Expected: key, at $_";
 		}
 		my $key = $1;
+		unless ($2) {
+			$struct->{$key} = undef;
+			next;
+		}
 		($struct->{$key}, $_) = &eat_one($_);
 	}
 	croak "expected }";
@@ -197,6 +206,11 @@ Data::ENAML will marshall blessed objects.
 
 Data::ENAML does not convert UTF-8, and does not automatically assume 
 Latin-1 charset.
+
+=item
+
+Data::ENAML represents unassigned properties by undef and not a NULL 
+character.
 
 =head1 TODO
 

@@ -13,7 +13,8 @@ $loaded = 1;
 print "ok 1\n";
 
 my $struct = {'module' => {'nick' => 'Schop', 'inspired' => 'by',
-	'Robey' => 'Cute. But why are you reading the test source?'}};
+	'Robey' => 'Cute. But why are you reading the test source?',
+	'Feature' => undef}};
 
 my $text = serialize($struct);
 my $struct2 = deserialize($text);
